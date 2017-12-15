@@ -1,98 +1,51 @@
-﻿using Assets.Scripts.Tests;
-using NUnit.Framework;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.TestTools;
 
-namespace Assets.Scripts
+namespace Assets.Scripts.Tests
 {
     public class ObjectPoolTests
     {
-        [UnityTest]
-        public IEnumerator GetNewObjectsFromPool()
+        [Test]
+        public void Test_AddToPool()
         {
-            TestsHelper.EnemyTests.SetupEnemies();
-            var droids = TestsHelper.EnemyTests.SpawnEnemies(EnemyType.Droid, 4).ToArray();
+            var droid = new GameObject().AddComponent<Droid>();
+            ObjectPool.Add(droid);
 
-            // Check if we have 4 droids
-            Assert.AreEqual(droids.Length, 4);
-
-            yield return null;
+            var value = ObjectPool.GetAmountInPool(IProviders.PoolableType.Droid);
+            Assert.AreEqual(1, value);
         }
 
-        [UnityTest]
-        public IEnumerator PoolNewObjectsIntoPool()
+        [Test]
+        public void Test_GrabFromPool()
         {
-            TestsHelper.EnemyTests.SetupEnemies();
-            var droids = TestsHelper.EnemyTests.SpawnEnemies(EnemyType.Droid, 4).ToArray();
+            var droid = new GameObject().AddComponent<Droid>();
+            ObjectPool.Add(droid);
 
-            // Pool 2 droids
-            for (int i = 0; i < 2; i++)
-                droids[i].Kill();
-
-            // Get droids amount in pool
-            var amountInPool = ObjectPool.GetAmountInPool(EnemyType.Droid);
-
-            // Check if we have 2 droids in the pool
-            Assert.AreEqual(amountInPool, 2);
-
-            yield return null;
+            var droidData = ObjectPool.Get(IProviders.PoolableType.Droid);
+            Assert.IsNotNull(droidData);
         }
 
-        [UnityTest]
-        public IEnumerator GetPooledObjectFromPool()
+        [Test]
+        public void Test_ConvertToConcreteType()
         {
-            TestsHelper.EnemyTests.PreSetupObjectPool(EnemyType.Droid, 1);
+            // Add droid to pool
+            var droid = new GameObject().AddComponent<Droid>();
+            ObjectPool.Add(droid);
 
-            // Get a droid from the pool without allowing pool growth
-            var droid = ObjectPool.Get(EnemyType.Droid, false);
-
-            // Check if the droid exists
-            Assert.IsNotNull(droid);
-
-            yield return null;
-        }
-
-        [UnityTest]
-        public IEnumerator GetMultipleObjectTypesFromPool()
-        {
-            var enemiesToSetup = new Dictionary<EnemyType, int> { { EnemyType.Droid, 1 }, { EnemyType.Reaper, 1 } };
-            TestsHelper.EnemyTests.PreSetupObjectPool(enemiesToSetup);
-
-            // Get amounts in pool
-            var amountInPoolDroids = ObjectPool.GetAmountInPool(EnemyType.Droid);
-            var amountInPoolReapers = ObjectPool.GetAmountInPool(EnemyType.Reaper);
-
-            // Check if it is correct
-            Assert.AreEqual(amountInPoolDroids, 1);
-            Assert.AreEqual(amountInPoolReapers, 1);
-
-            // Get a droid and reaper from the pool respectively
-            var droid = ObjectPool.Get(EnemyType.Droid, false);
-            var reaper = ObjectPool.Get(EnemyType.Reaper, false);
-
-            // Check if the droid and reaper exists
-            Assert.IsNotNull(droid);
-            Assert.IsNotNull(reaper);
-
-            // Try get more from the pool and see if object is null without grow.
-            var droid2 = ObjectPool.Get(EnemyType.Droid, false);
-            var reaper2 = ObjectPool.Get(EnemyType.Reaper, false);
-
-            // Check if the extra one is null
-            Assert.IsNull(droid2);
-            Assert.IsNull(reaper2);
-
-            yield return null;
+            // Convert to concrete type
+            var newDroid = ObjectPool.Get<Droid>(IProviders.PoolableType.Droid);
+            Assert.IsTrue(newDroid != default(Droid));
         }
 
         [TearDown]
-        public void CleanGameobjects()
+        public void Test_Cleanup()
         {
+            // Clean all objects from the scene
             foreach (var obj in Object.FindObjectsOfType<GameObject>())
                 Object.Destroy(obj);
+
+            // Clean the pool references
+            ObjectPool.Clear();
         }
     }
 }

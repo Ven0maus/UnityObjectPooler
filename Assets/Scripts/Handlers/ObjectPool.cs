@@ -6,17 +6,14 @@ namespace Assets.Scripts
 {
     public static class ObjectPool
     {
-        private static Dictionary<int?, IEnemy> Pool = new Dictionary<int?, IEnemy>();
+        private static Dictionary<int, IPoolable> Pool = new Dictionary<int, IPoolable>();
 
-        private static EnemyHandler _enemyHandler;
-        private static EnemyHandler EnemyHandler
+        /// <summary>
+        /// Clear's the entire pool of objects, must be called on new scene load.
+        /// </summary>
+        public static void Clear()
         {
-            get
-            {
-                if (_enemyHandler != null) return _enemyHandler;
-                _enemyHandler = UnityEngine.Object.FindObjectOfType<EnemyHandler>();
-                return _enemyHandler;
-            }
+            Pool.Clear();
         }
 
         private static int CurrentId = 0;
@@ -31,23 +28,23 @@ namespace Assets.Scripts
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static int GetAmountInPool(EnemyType type)
+        public static int GetAmountInPool(PoolableType type)
         {
-            return Pool.Values.Where(f => f.Type == type).Count();
+            return Pool.Values.Count(f => f.GetPoolableType() == type);
         }
 
         /// <summary>
-        /// Add enemy to the pool.
+        /// Add poolable obj to the pool.
         /// </summary>
         /// <param name="enemy"></param>
-        public static void Add(IEnemy enemy)
+        public static void Add(IPoolable poolableObj)
         {
-            IEnemy data;
-            if (!Pool.TryGetValue(enemy.Id, out data))
+            IPoolable data;
+            if (!Pool.TryGetValue(poolableObj.Id, out data))
             {
                 // Add to pool and deactivate enemy.
-                Pool.Add(enemy.Id, enemy);
-                enemy.GameObject.SetActive(false);
+                Pool.Add(poolableObj.Id, poolableObj);
+                poolableObj.GameObject.SetActive(false);
             }
             else
             {
@@ -56,35 +53,39 @@ namespace Assets.Scripts
         }
 
         /// <summary>
-        /// Get available enemy from the pool.
+        /// Get available poolable obj from the pool.
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static IEnemy Get(EnemyType type, bool allowGrow = false)
+        public static IPoolable Get(PoolableType type)
         {
-            var enemy = Pool.Values.FirstOrDefault(f => f.Type == type);
-            if (enemy != null)
+            var poolableObj = Pool.Values.FirstOrDefault(f => f.GetPoolableType() == type);
+            if (poolableObj != null)
             {
                 // Get existing enemy data
-                Pool.Remove(enemy.Id);
-                enemy.GameObject.SetActive(true);
-                return enemy;
-            }
-            else
-            {
-                if (allowGrow)
-                {
-                    // Get existing enemy data
-                    var data = EnemyHandler.Enemies.FirstOrDefault(f => f.Type == type);
-
-                    // Make a new one
-                    var newData = UnityEngine.Object.Instantiate(data.Prefab, new UnityEngine.Vector3(0, 0, 0), UnityEngine.Quaternion.identity);
-                    enemy = newData.GetComponent<IEnemy>();
-
-                    return enemy;
-                }
+                Pool.Remove(poolableObj.Id);
+                poolableObj.GameObject.SetActive(true);
+                return poolableObj;
             }
             return null;
+        }
+
+        /// <summary>
+        /// Get available poolable obj from the pool converted to its concrete type.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static T Get<T>(PoolableType type)
+        {
+            var poolableObj = Pool.Values.FirstOrDefault(f => f.GetPoolableType() == type);
+            if (poolableObj != null)
+            {
+                // Get existing enemy data
+                Pool.Remove(poolableObj.Id);
+                poolableObj.GameObject.SetActive(true);
+                return poolableObj.GetConcreteType<T>();
+            }
+            return default(T);
         }
     }
 }
