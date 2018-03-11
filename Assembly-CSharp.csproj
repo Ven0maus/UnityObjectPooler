@@ -55,7 +55,6 @@
     <Compile Include="Assets\Scripts\Handlers\ObjectPool.cs" />
     <Compile Include="Assets\Scripts\Handlers\PoolBehaviour.cs" />
     <Compile Include="Assets\Scripts\IProviders\IPoolable.cs" />
-    <Compile Include="Assets\Scripts\Tests\Droid.cs" />
     <Compile Include="Assets\Scripts\Tests\ObjectPoolTests.cs" />
     <Reference Include="UnityEngine.UI">
       <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
