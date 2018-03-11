@@ -8,12 +8,12 @@ namespace Assets.Scripts.Tests
     {
         public class Droid : PoolBehaviour
         {
-
+            public string Name;
         }
 
         public class DroidPlane : PoolBehaviour
         {
-
+            public int Ammo;
         }
 
         [Test]
@@ -84,6 +84,30 @@ namespace Assets.Scripts.Tests
             }
 
             Assert.AreEqual(0, ObjectPool.GetAmountInPool<Droid>());
+            Assert.AreEqual(0, ObjectPool.GetAmountInPool<DroidPlane>());
+        }
+
+        [Test]
+        public void Test_GrabByCustomCriteriaFromPool()
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                var droid = new GameObject().AddComponent<Droid>();
+                droid.Name = "droid";
+                ObjectPool.Add(droid);
+
+                var droid2 = new GameObject().AddComponent<DroidPlane>();
+                droid2.Ammo = 5;
+                ObjectPool.Add(droid2);
+
+                var droidObj1 = ObjectPool.GetCustom<Droid>(f => f.Name == "blabla");
+                var droidObj2 = ObjectPool.GetCustom<DroidPlane>(f => f.Ammo == 5);
+
+                Assert.IsNull(droidObj1);
+                Assert.IsNotNull(droidObj2);
+            }
+
+            Assert.AreEqual(5, ObjectPool.GetAmountInPool<Droid>());
             Assert.AreEqual(0, ObjectPool.GetAmountInPool<DroidPlane>());
         }
 
