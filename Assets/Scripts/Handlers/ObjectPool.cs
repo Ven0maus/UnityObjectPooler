@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.IProviders;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -26,7 +27,7 @@ namespace Assets.Scripts
         /// <returns></returns>
         public static int GetAmountInPool<T>() where T : IPoolable
         {
-            return Pool.Count(f => f.GetPoolableType().Equals(typeof(T).Name));
+            return Pool.Count(f => f.GetType().Name.Equals(typeof(T).Name));
         }
 
         /// <summary>
@@ -48,39 +49,55 @@ namespace Assets.Scripts
         }
 
         /// <summary>
-        /// Get available poolable obj from the pool.
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static IPoolable Get<T>()
-        {
-            var poolableObj = Pool.FirstOrDefault(f => f.GetPoolableType().Equals(typeof(T).Name));
-            if (poolableObj != null)
-            {
-                // Get existing enemy data
-                Pool.Remove(poolableObj);
-                poolableObj.GameObject.SetActive(true);
-                return poolableObj;
-            }
-            return null;
-        }
-
-        /// <summary>
         /// Get available poolable obj from the pool converted to its concrete type.
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static T GetCast<T>()
+        public static T Get<T>() where T : IPoolable
         {
-            var poolableObj = Pool.FirstOrDefault(f => f.GetPoolableType().Equals(typeof(T).Name));
+            var poolableObj = Pool.FirstOrDefault(f => f.GetType().Name.Equals(typeof(T).Name));
             if (poolableObj != null)
             {
                 // Get existing enemy data
                 Pool.Remove(poolableObj);
                 poolableObj.GameObject.SetActive(true);
-                return poolableObj.GetConcreteType<T>();
+                return GetConcreteType<T>(poolableObj);
             }
             return default(T);
+        }
+
+        public static T GetCustom<T>(Func<T, bool> criteria) where T : IPoolable
+        {
+            var poolableObjects = Pool.Where(f => f.GetType().Name.Equals(typeof(T).Name));
+            foreach (var poolableObj in poolableObjects)
+            {
+                if (criteria.Invoke((T)poolableObj))
+                {
+                    // Get existing enemy data
+                    Pool.Remove(poolableObj);
+                    poolableObj.GameObject.SetActive(true);
+                    return GetConcreteType<T>(poolableObj);
+                }
+            }
+            return default(T);
+        }
+
+        /// <summary>
+        /// Returns the concrete type of this PoolableType.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="enemy"></param>
+        /// <returns></returns>
+        private static T GetConcreteType<T>(IPoolable obj) where T : IPoolable
+        {
+            try
+            {
+                return (T)Convert.ChangeType(obj, obj.GetType());
+            }
+            catch (InvalidCastException)
+            {
+                return default(T);
+            }
         }
     }
 }

@@ -76,30 +76,15 @@ namespace Assets.Scripts.Tests
                 var droid2 = new GameObject().AddComponent<DroidPlane>();
                 ObjectPool.Add(droid2);
 
-                ObjectPool.Get<Droid>();
-                ObjectPool.Get<DroidPlane>();
+                var droidObj1 = ObjectPool.Get<Droid>();
+                var droidObj2 = ObjectPool.Get<DroidPlane>();
+
+                Assert.IsNotNull(droidObj1);
+                Assert.IsNotNull(droidObj2);
             }
 
             Assert.AreEqual(0, ObjectPool.GetAmountInPool<Droid>());
             Assert.AreEqual(0, ObjectPool.GetAmountInPool<DroidPlane>());
-        }
-
-        [Test]
-        public void Test_ConvertToConcreteType()
-        {
-            // Add droid to pool
-            var droid = new GameObject().AddComponent<Droid>();
-            ObjectPool.Add(droid);
-
-            var droid2 = new GameObject().AddComponent<DroidPlane>();
-            ObjectPool.Add(droid2);
-
-            // Convert to concrete type
-            var newDroid = ObjectPool.GetCast<Droid>();
-            Assert.IsTrue(newDroid != default(Droid));
-
-            var newDroid2 = ObjectPool.GetCast<DroidPlane>();
-            Assert.IsTrue(newDroid2 != default(DroidPlane));
         }
 
         [TearDown]
