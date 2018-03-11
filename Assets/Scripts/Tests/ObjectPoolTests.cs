@@ -11,8 +11,21 @@ namespace Assets.Scripts.Tests
             var droid = new GameObject().AddComponent<Droid>();
             ObjectPool.Add(droid);
 
-            var value = ObjectPool.GetAmountInPool(IProviders.PoolableType.Droid);
+            var value = ObjectPool.GetAmountInPool<Droid>();
             Assert.AreEqual(1, value);
+        }
+
+        [Test]
+        public void Test_AddMultipleToPool()
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                var droid = new GameObject().AddComponent<Droid>();
+                ObjectPool.Add(droid);
+            }
+
+            var value = ObjectPool.GetAmountInPool<Droid>();
+            Assert.AreEqual(5, value);
         }
 
         [Test]
@@ -21,8 +34,22 @@ namespace Assets.Scripts.Tests
             var droid = new GameObject().AddComponent<Droid>();
             ObjectPool.Add(droid);
 
-            var droidData = ObjectPool.Get(IProviders.PoolableType.Droid);
+            var droidData = ObjectPool.Get<Droid>();
             Assert.IsNotNull(droidData);
+        }
+
+        [Test]
+        public void Test_GrabMultipleFromPool()
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                var droid = new GameObject().AddComponent<Droid>();
+                ObjectPool.Add(droid);
+
+                var droidData = ObjectPool.Get<Droid>();
+            }
+
+            Assert.AreEqual(0, ObjectPool.GetAmountInPool<Droid>());
         }
 
         [Test]
@@ -33,7 +60,7 @@ namespace Assets.Scripts.Tests
             ObjectPool.Add(droid);
 
             // Convert to concrete type
-            var newDroid = ObjectPool.Get<Droid>(IProviders.PoolableType.Droid);
+            var newDroid = ObjectPool.GetCast<Droid>();
             Assert.IsTrue(newDroid != default(Droid));
         }
 

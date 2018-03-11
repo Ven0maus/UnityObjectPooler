@@ -2,17 +2,10 @@
 
 namespace Assets.Scripts.IProviders
 {
-    public enum PoolableType
-    {
-        None,
-        Droid
-    }
-
     public interface IPoolable
     {
-        int Id { get; }
         GameObject GameObject { get; }
-        PoolableType GetPoolableType();
+        string GetPoolableType();
         T GetConcreteType<T>();
     }
 }

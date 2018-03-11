@@ -6,17 +6,6 @@ namespace Assets.Scripts.Handlers
 {
     public abstract class PoolBehaviour : MonoBehaviour, IPoolable
     {
-        private int? _id;
-        public int Id
-        {
-            get
-            {
-                if (_id != null) return (int)_id;
-                _id = ObjectPool.GetUniqueId();
-                return (int)_id;
-            }
-        }
-
         /// <summary>
         /// Reference to the gameObject for IPoolable interface.
         /// </summary>
@@ -44,9 +33,9 @@ namespace Assets.Scripts.Handlers
         /// Will return the poolable type, must be overriden by it's inheritted class.
         /// </summary>
         /// <returns></returns>
-        public virtual PoolableType GetPoolableType()
+        public string GetPoolableType()
         {
-            return PoolableType.None;
+            return GetType().Name;
         }
 
         /// <summary>

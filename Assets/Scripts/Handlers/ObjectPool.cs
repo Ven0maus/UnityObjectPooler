@@ -6,7 +6,10 @@ namespace Assets.Scripts
 {
     public static class ObjectPool
     {
-        private static Dictionary<int, IPoolable> Pool = new Dictionary<int, IPoolable>();
+        /// <summary>
+        /// The pool collection.
+        /// </summary>
+        private static HashSet<IPoolable> Pool = new HashSet<IPoolable>();
 
         /// <summary>
         /// Clear's the entire pool of objects, must be called on new scene load.
@@ -16,21 +19,14 @@ namespace Assets.Scripts
             Pool.Clear();
         }
 
-        private static int CurrentId = 0;
-        public static int? GetUniqueId()
-        {
-            CurrentId++;
-            return CurrentId;
-        }
-
         /// <summary>
         /// Returns the amount of objects in the pool of this given type.
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static int GetAmountInPool(PoolableType type)
+        public static int GetAmountInPool<T>() where T : IPoolable
         {
-            return Pool.Values.Count(f => f.GetPoolableType() == type);
+            return Pool.Count(f => f.GetPoolableType().Equals(typeof(T).Name));
         }
 
         /// <summary>
@@ -39,11 +35,10 @@ namespace Assets.Scripts
         /// <param name="enemy"></param>
         public static void Add(IPoolable poolableObj)
         {
-            IPoolable data;
-            if (!Pool.TryGetValue(poolableObj.Id, out data))
+            if (!Pool.Contains(poolableObj))
             {
                 // Add to pool and deactivate enemy.
-                Pool.Add(poolableObj.Id, poolableObj);
+                Pool.Add(poolableObj);
                 poolableObj.GameObject.SetActive(false);
             }
             else
@@ -57,13 +52,13 @@ namespace Assets.Scripts
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static IPoolable Get(PoolableType type)
+        public static IPoolable Get<T>()
         {
-            var poolableObj = Pool.Values.FirstOrDefault(f => f.GetPoolableType() == type);
+            var poolableObj = Pool.FirstOrDefault(f => f.GetPoolableType().Equals(typeof(T).Name));
             if (poolableObj != null)
             {
                 // Get existing enemy data
-                Pool.Remove(poolableObj.Id);
+                Pool.Remove(poolableObj);
                 poolableObj.GameObject.SetActive(true);
                 return poolableObj;
             }
@@ -75,13 +70,13 @@ namespace Assets.Scripts
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static T Get<T>(PoolableType type)
+        public static T GetCast<T>()
         {
-            var poolableObj = Pool.Values.FirstOrDefault(f => f.GetPoolableType() == type);
+            var poolableObj = Pool.FirstOrDefault(f => f.GetPoolableType().Equals(typeof(T).Name));
             if (poolableObj != null)
             {
                 // Get existing enemy data
-                Pool.Remove(poolableObj.Id);
+                Pool.Remove(poolableObj);
                 poolableObj.GameObject.SetActive(true);
                 return poolableObj.GetConcreteType<T>();
             }
