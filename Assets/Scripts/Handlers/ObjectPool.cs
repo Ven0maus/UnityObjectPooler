@@ -50,7 +50,7 @@ namespace Assets.Scripts
             {
                 // Add to pool and deactivate enemy.
                 Pool.Add(key, new List<IPoolable> { poolableObj });
-                poolableObj.GameObject.SetActive(false);
+                poolableObj.gameObject.SetActive(false);
             }
             else
             {
@@ -73,7 +73,7 @@ namespace Assets.Scripts
                 IPoolable poolableObj = poolableObjects.First();
                 // Get existing enemy data
                 poolableObjects.Remove(poolableObj);
-                poolableObj.GameObject.SetActive(true);
+                poolableObj.gameObject.SetActive(true);
                 if (poolableObjects.Count == 0)
                     Pool.Remove(key);
                 return GetConcreteType<T>(poolableObj);
@@ -96,7 +96,7 @@ namespace Assets.Scripts
                     {
                         // Get existing enemy data
                         poolableObjects.Remove(poolableObj);
-                        poolableObj.GameObject.SetActive(true);
+                        poolableObj.gameObject.SetActive(true);
                         if (poolableObjects.Count == 0)
                             Pool.Remove(key);
                         return GetConcreteType<T>(poolableObj);

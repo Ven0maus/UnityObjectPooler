@@ -4,6 +4,6 @@ namespace Assets.Scripts.IProviders
 {
     public interface IPoolable
     {
-        GameObject GameObject { get; }
+        GameObject gameObject { get; }
     }
 }
