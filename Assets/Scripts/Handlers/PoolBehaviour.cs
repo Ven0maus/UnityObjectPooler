@@ -1,9 +1,8 @@
-﻿using Assets.Scripts.IProviders;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Assets.Scripts.Handlers
 {
-    public abstract class PoolBehaviour : MonoBehaviour, IPoolable
+    public abstract class PoolBehaviour : MonoBehaviour
     {
         /// <summary>
         /// The on death event.

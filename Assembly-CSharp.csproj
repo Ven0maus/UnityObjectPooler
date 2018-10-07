@@ -54,7 +54,6 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Handlers\ObjectPool.cs" />
     <Compile Include="Assets\Scripts\Handlers\PoolBehaviour.cs" />
-    <Compile Include="Assets\Scripts\IProviders\IPoolable.cs" />
     <Compile Include="Assets\Scripts\Tests\ObjectPoolTests.cs" />
     <Reference Include="UnityEngine.UI">
       <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
@@ -77,6 +76,12 @@
     <Reference Include="UnityEngine.HoloLens">
       <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnityHoloLens/RuntimeEditor/UnityEngine.HoloLens.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Assets\Scripts\IProviders\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
