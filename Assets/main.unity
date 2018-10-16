@@ -77,15 +77,18 @@ LightmapSettings:
     m_PVRDirectSampleCount: 32
     m_PVRSampleCount: 500
     m_PVRBounces: 2
-    m_PVRFiltering: 0
+    m_PVRFilterTypeDirect: 0
+    m_PVRFilterTypeIndirect: 0
+    m_PVRFilterTypeAO: 0
     m_PVRFilteringMode: 1
     m_PVRCulling: 1
     m_PVRFilteringGaussRadiusDirect: 1
     m_PVRFilteringGaussRadiusIndirect: 5
     m_PVRFilteringGaussRadiusAO: 2
-    m_PVRFilteringAtrousColorSigma: 1
-    m_PVRFilteringAtrousNormalSigma: 1
-    m_PVRFilteringAtrousPositionSigma: 1
+    m_PVRFilteringAtrousPositionSigmaDirect: 0.5
+    m_PVRFilteringAtrousPositionSigmaIndirect: 2
+    m_PVRFilteringAtrousPositionSigmaAO: 1
+    m_ShowResolutionOverlay: 1
   m_LightingDataAsset: {fileID: 0}
   m_UseShadowmask: 1
 --- !u!196 &4
@@ -107,6 +110,8 @@ NavMeshSettings:
     manualTileSize: 0
     tileSize: 256
     accuratePlacement: 0
+    debug:
+      m_Flags: 0
   m_NavMeshData: {fileID: 0}
 --- !u!1 &1329128086
 GameObject:
@@ -179,11 +184,11 @@ Camera:
   m_TargetEye: 3
   m_HDR: 1
   m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
-  m_StereoMirrorMode: 0
 --- !u!4 &1329128091
 Transform:
   m_ObjectHideFlags: 0
@@ -205,7 +210,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 1617740747}
-  - component: {fileID: 1617740746}
+  - component: {fileID: 1617740745}
   m_Layer: 0
   m_Name: Game
   m_TagString: Untagged
@@ -213,7 +218,7 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1617740746
+--- !u!114 &1617740745
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -221,14 +226,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1617740744}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c39054ba5f7ac8543b953209fb909fda, type: 3}
+  m_Script: {fileID: 11500000, guid: 23aceb3cf68b4c84c90b6d37aae2e12e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Enemies:
-  - Prefab: {fileID: 1746952205779926, guid: 2991b1ecf1160924dbcc6e349cb059f2, type: 2}
-    Type: 0
-  - Prefab: {fileID: 1746952205779926, guid: 2991b1ecf1160924dbcc6e349cb059f2, type: 2}
-    Type: 1
+  SecondsPerShot: 2
 --- !u!4 &1617740747
 Transform:
   m_ObjectHideFlags: 0
