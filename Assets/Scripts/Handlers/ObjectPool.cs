@@ -50,6 +50,35 @@ public static class ObjectPool
     }
 
     /// <summary>
+    /// Add poolable obj to the pool as a base class instead of the subclass.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="poolableObj"></param>
+    public static void Add<T>(Component poolableObj) where T : Component
+    {
+        var otherType = typeof(T);
+        var originalType = poolableObj.GetType();
+        if (!originalType.IsSubclassOf(otherType))
+        {
+            throw new Exception("Generic type: " + originalType.Name + " is not a subclass of type: " + otherType.Name);
+        }
+
+        List<Component> poolableObjects;
+        string key = otherType.Name;
+        if (!Pool.TryGetValue(key, out poolableObjects))
+        {
+            // Add to pool and deactivate enemy.
+            Pool.Add(key, new List<Component> { poolableObj });
+            poolableObj.gameObject.SetActive(false);
+        }
+        else
+        {
+            poolableObjects.Add(poolableObj);
+            poolableObj.gameObject.SetActive(false);
+        }
+    }
+
+    /// <summary>
     /// Get available poolable obj from the pool converted to its concrete type.
     /// </summary>
     /// <returns></returns>
