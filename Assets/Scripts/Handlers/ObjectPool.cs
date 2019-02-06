@@ -8,7 +8,7 @@ public static class ObjectPool
     /// <summary>
     /// The pool collection.
     /// </summary>
-    private static readonly Dictionary<string, List<Component>> Pool = new Dictionary<string, List<Component>>();
+    private static readonly Dictionary<Type, List<Component>> Pool = new Dictionary<Type, List<Component>>();
 
     /// <summary>
     /// Clear's the entire pool of objects, must be called on new scene load.
@@ -25,7 +25,7 @@ public static class ObjectPool
     public static int GetAmountInPool<T>() where T : Component
     {
         List<Component> poolableObjects;
-        return Pool.TryGetValue(typeof(T).Name, out poolableObjects) ? poolableObjects.Count : 0;
+        return Pool.TryGetValue(typeof(T), out poolableObjects) ? poolableObjects.Count : 0;
     }
 
     /// <summary>
@@ -35,7 +35,7 @@ public static class ObjectPool
     public static void Add(Component poolableObj)
     {
         List<Component> poolableObjects;
-        var key = poolableObj.GetType().Name;
+        var key = poolableObj.GetType();
         if (!Pool.TryGetValue(key, out poolableObjects))
         {
             // Add to pool and deactivate enemy.
@@ -64,7 +64,7 @@ public static class ObjectPool
         }
 
         List<Component> poolableObjects;
-        string key = otherType.Name;
+        Type key = otherType;
         if (!Pool.TryGetValue(key, out poolableObjects))
         {
             // Add to pool and deactivate enemy.
@@ -85,7 +85,7 @@ public static class ObjectPool
     public static T Get<T>() where T : Component
     {
         List<Component> poolableObjects;
-        var key = typeof(T).Name;
+        var key = typeof(T);
 
         if (Pool.TryGetValue(key, out poolableObjects))
         {
@@ -110,7 +110,7 @@ public static class ObjectPool
     public static T GetCustom<T>(Func<T, bool> criteria) where T : Component
     {
         List<Component> poolableObjects;
-        var key = typeof(T).Name;
+        var key = typeof(T);
 
         if (!Pool.TryGetValue(key, out poolableObjects)) return default(T);
         var customObjects = poolableObjects.Where(f => criteria.Invoke((T) f));
