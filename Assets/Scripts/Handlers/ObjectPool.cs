@@ -60,6 +60,12 @@ public static class ObjectPool
         var originalType = poolableObj.GetType();
         if (!originalType.IsSubclassOf(otherType))
         {
+            // Call normal add when its not a subclass but same class as component.
+            if (originalType.Equals(otherType))
+            {
+                Add(poolableObj);
+                return;
+            }
             throw new Exception("Generic type: " + originalType.Name + " is not a subclass of type: " + otherType.Name);
         }
 
