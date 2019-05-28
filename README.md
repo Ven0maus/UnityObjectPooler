@@ -1,5 +1,5 @@
 # UnityObjectPooler
-A unity object pool that works based on an interface.
+A unity object pool that can take any unity component.
 
 Can be used freely in your games.
 
